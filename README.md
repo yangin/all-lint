@@ -5,7 +5,7 @@ A library for code style, includes Prettier、ESLint、StyleLint.
 # Installation
 
 ```bash
-npm install @yangin/code-style --save-dev
+npm install @pplmc/code-style --save-dev
 
 # 引用react还需添加
 npm install @babel/preset-env @babel/preset-react --save-dev
@@ -34,7 +34,7 @@ npm install @babel/core @babel/preset-env @babel/preset-react @babel/preset-type
 ```js
 // 当需要添加新的rules时
 module.exports = {
-  extends: [require.resolve("@yangin/code-style/config/eslint")],
+  extends: [require.resolve("@pplmc/code-style/config/eslint")],
   rules: {},
 };
 ```
@@ -42,7 +42,7 @@ module.exports = {
 或者
 
 ```js
-const linter = require("@yangin/code-style");
+const linter = require("@pplmc/code-style");
 
 module.exports = {
   ...linter.eslint,
@@ -108,7 +108,7 @@ setting.json
 ```js
 // 当需要添加新的rules时
 module.exports = {
-  extends: [require.resolve("@yangin/code-style/config/stylelint")],
+  extends: [require.resolve("@pplmc/code-style/config/stylelint")],
   rules: {},
 };
 ```
@@ -116,7 +116,7 @@ module.exports = {
 或者
 
 ```js
-const linter = require("@yangin/code-style");
+const linter = require("@pplmc/code-style");
 
 module.exports = {
   ...linter.stylelint,
@@ -170,7 +170,7 @@ setting.json
 ```js
 // 当需要添加新的rules时
 module.exports = {
-  extends: [require.resolve("@yangin/code-style/config/prettier")],
+  extends: [require.resolve("@pplmc/code-style/config/prettier")],
   rules: {},
 };
 ```
@@ -178,7 +178,7 @@ module.exports = {
 或者
 
 ```js
-const linter = require("@yangin/code-style");
+const linter = require("@pplmc/code-style");
 
 module.exports = {
   ...linter.prettier,

@@ -1,5 +1,5 @@
 {
-  "name": "@yangin/code-style",
+  "name": "@pplmc/code-style",
   "version": "1.0.0",
   "description": "A library for code style, includes Prettier、ESLint、StyleLint",
   "main": "index.js",
