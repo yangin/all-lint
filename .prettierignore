@@ -1,0 +1,25 @@
+# package
+node_modules
+*.lock
+
+# image
+*.png
+*.svg
+*.jpg
+*.jpeg
+*.gif
+
+# product
+/dist
+*.zip
+
+# config
+.gitignore
+.eslintignore
+.editorconfig
+.prettierignore
+.stylelintignore
+
+# other
+.DS_Store
+LICENSE
