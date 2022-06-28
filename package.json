@@ -1,0 +1,54 @@
+{
+  "name": "@yangin/code-style",
+  "version": "1.0.0",
+  "description": "A library for code style, includes Prettier、ESLint、StyleLint",
+  "main": "index.js",
+  "scripts": {
+    "lint:js": "eslint --ext .js,.jsx,.ts,.tsx ./test",
+    "lint-fix:js": "eslint --ext .js,.jsx,.ts,.tsx ./test --fix",
+    "lint:prettier": "prettier **/*.{html,json,md} --check",
+    "lint-fix:prettier": "prettier **/*.{html,json,md} --write",
+    "lint:style": "stylelint **/*.{css,less,scss}",
+    "lint-fix:style": "stylelint **/*.{css,less,scss} --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yangin/code-style.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yangin/code-style/issues"
+  },
+  "homepage": "https://github.com/yangin/code-style#readme",
+  "dependencies": {
+    "@babel/eslint-parser": "^7.18.2",
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^26.5.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-react-hooks": "^4.5.0",
+    "eslint-plugin-react": "^7.30.0",
+    "eslint": "^8.17.0",
+    "prettier": "^2.6.0",
+    "stylelint-order": "^5.0.0",
+    "stylelint": "^14.8.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-react": "^7.17.12",
+    "@babel/preset-typescript": "^7.17.12",
+    "typescript": "^3.8.3"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-react": "^7.17.12",
+    "@babel/preset-typescript": "^7.17.12",
+    "typescript": "^3.8.3"
+  }
+}
