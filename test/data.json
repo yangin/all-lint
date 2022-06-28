@@ -1,0 +1,46 @@
+{
+  "name": "code-style",
+  "version": "1.0.0",
+  "description": "A library for code style, includes Prettier、ESLint、StyleLint",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint **/*.js",
+    "lint-fix": "eslint **/*.js --fix",
+    "lint:prettier": "prettier **/*.html --check",
+    "lint:prettier-fix": "prettier **/*.html --write",
+    "lint:style": "stylelint **/*.css",
+    "lint:style-fix": "stylelint **/*.css --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yangin/code-style.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yangin/code-style/issues"
+  },
+  "homepage": "https://github.com/yangin/code-style#readme",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "prettier": "^2.6.0",
+    "stylelint": "^14.8.3",
+    "stylelint-order": "^5.0.0"
+  },
+  "peerDependencies": {
+    "eslint": "^5.16.0 || ^6.8.0 || ^7.2.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "prettier": "^2.6.0",
+    "stylelint": "^14.8.3",
+    "stylelint-config-prettier": "^9.0.3",
+    "stylelint-order": "^5.0.0"
+  }
+}
