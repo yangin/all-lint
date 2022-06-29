@@ -15,7 +15,7 @@
     "type": "git",
     "url": "git+https://github.com/yangin/code-style.git"
   },
-  "keywords": [],
+  "keywords": ["Prettier", "ESLint", "StyleLint"],
   "author": "",
   "license": "ISC",
   "bugs": {

@@ -4,14 +4,22 @@ A library for code style, includes Prettier、ESLint、StyleLint.
 
 # Installation
 
+引用eslint
+
 ```bash
-npm install @pplmc/code-style --save-dev
+npm install @pplmc/code-style @babel/core --save-dev
+```
 
-# 引用react还需添加
-npm install @babel/preset-env @babel/preset-react --save-dev
+引用react
 
-# 引用react-typescript还需添加
-npm install @babel/core @babel/preset-env @babel/preset-react @babel/preset-typescript typescript --save-dev
+```bash
+npm install @pplmc/code-style @babel/preset-env @babel/preset-react --save-dev
+```
+
+引用react-typescript
+
+```bash
+npm install @pplmc/code-style @babel/core @babel/preset-env @babel/preset-react @babel/preset-typescript typescript --save-dev
 ```
 
 # Usage
