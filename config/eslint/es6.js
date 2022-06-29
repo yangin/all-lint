@@ -16,7 +16,7 @@ module.exports = {
     'arrow-body-style': ['error', 'as-needed'],
 
     // 要求在所有情况下使用圆括号将参数括起来
-    'arrow-parens': ['error', 'as-needed'],
+    // 'arrow-parens': ['error', 'as-needed'],
 
     // 强制箭头函数的箭头前后使用一致的空格 --fix
     'arrow-spacing': ['error', { before: true, after: true }],
