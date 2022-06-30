@@ -4,6 +4,7 @@ const prettierConfig = require('./config/prettier')
 const tslintConfig = require('./config/tslint')
 const reactLintConfig = require('./config/react')
 const reactTypescriptLintConfig = require('./config/react-typescript')
+const commitLintConfig = require('./config/commitlint')
 
 module.exports = {
   'eslint': eslintConfig,
@@ -11,5 +12,6 @@ module.exports = {
   'react': reactLintConfig,
   'react-typescript': reactTypescriptLintConfig,
   'stylelint': stylelintConfig,
-  'prettier': prettierConfig
+  'prettier': prettierConfig,
+  'commitlint': commitLintConfig
 }
