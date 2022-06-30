@@ -15,7 +15,11 @@
     "type": "git",
     "url": "git+https://github.com/yangin/code-style.git"
   },
-  "keywords": ["Prettier", "ESLint", "StyleLint"],
+  "keywords": [
+    "Prettier",
+    "ESLint",
+    "StyleLint"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -24,18 +28,19 @@
   "homepage": "https://github.com/yangin/code-style#readme",
   "dependencies": {
     "@babel/eslint-parser": "^7.18.2",
+    "@commitlint/cli": "^17.0.3",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
+    "eslint": "^8.17.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^26.5.3",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
-    "eslint-plugin-react-hooks": "^4.5.0",
     "eslint-plugin-react": "^7.30.0",
-    "eslint": "^8.17.0",
+    "eslint-plugin-react-hooks": "^4.5.0",
     "prettier": "^2.6.0",
-    "stylelint-order": "^5.0.0",
-    "stylelint": "^14.8.3"
+    "stylelint": "^14.8.3",
+    "stylelint-order": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.2",
