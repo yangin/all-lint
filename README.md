@@ -4,19 +4,19 @@ A library for code style, includes Prettier、ESLint、StyleLint.
 
 # Installation
 
-引用eslint
+引用 eslint
 
 ```bash
 npm install @pplmc/code-style @babel/core --save-dev
 ```
 
-引用react
+引用 react
 
 ```bash
 npm install @pplmc/code-style @babel/preset-env @babel/preset-react --save-dev
 ```
 
-引用react-typescript
+引用 react-typescript
 
 ```bash
 npm install @pplmc/code-style @babel/core @babel/preset-env @babel/preset-react @babel/preset-typescript typescript --save-dev
@@ -219,6 +219,45 @@ setting.json
   },
   // 配置默认的格式化工具是prettier
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+```
+
+## CommitLint
+
+用来校验 git commit message 格式规范
+
+### Configuration
+
+第一步：集成 [husky](https://typicode.github.io/husky/#/)(若已集成，则省略此步骤)
+
+```bash
+npx husky-init && npm install
+```
+
+第二步：集成[commitlint](https://github.com/conventional-changelog/commitlint),在 husky 中添加 commit-msg hooks
+
+```bash
+npx husky add .husky/commit-msg 'npx --no-install commitlint --edit "$1"'
+```
+
+执行成功后，会新增一个 ./husky/commit-msg 文件
+
+第三步：项目根目录中添加 CommitLint 配置文件， 如.commitlintrc.js：
+
+```js
+module.exports = {
+  extends: [require.resolve("@pplmc/code-style/config/commitlint")],
+  rules: {},
+};
+```
+
+或者
+
+```js
+const linter = require("@pplmc/code-style");
+
+module.exports = {
+  ...linter.commitlint,
+};
 ```
 
 # Note
