@@ -9,7 +9,8 @@
     "lint:prettier": "prettier **/*.{html,json,md} --check",
     "lint-fix:prettier": "prettier **/*.{html,json,md} --write",
     "lint:style": "stylelint **/*.{css,less,scss}",
-    "lint-fix:style": "stylelint **/*.{css,less,scss} --fix"
+    "lint-fix:style": "stylelint **/*.{css,less,scss} --fix",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -47,7 +48,8 @@
     "@babel/preset-env": "^7.18.2",
     "@babel/preset-react": "^7.17.12",
     "@babel/preset-typescript": "^7.17.12",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "husky": "^8.0.0"
   },
   "peerDependencies": {
     "@babel/core": "^7.18.2",
