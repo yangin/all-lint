@@ -44,7 +44,7 @@ module.exports = {
     'block-no-empty': true,
 
     // 禁止未知的伪类选择器
-    'selector-pseudo-class-no-unknown': true,
+    'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ['global'] }],
     // 禁止未知的伪元素选择器
     'selector-pseudo-element-no-unknown': true,
     // 禁止未知类型选择器
@@ -59,17 +59,12 @@ module.exports = {
     // 禁止空注释
     'comment-no-empty': true,
 
-    // 禁止较低特异性的选择器出现在较高特异性的选择器之后
-    // 如：#container a { top: 10px; } a { top: 0; }
-    'no-descending-specificity': true,
     // 样式表中禁止出现重复的@import 规则
     'no-duplicate-at-import-rules': true,
     // 禁止样式表中的重复选择器
     'no-duplicate-selectors': true,
     // 禁止空源
     'no-empty-source': true,
-    // 禁止无效的双斜杠注释（//...），因为它不被CSS支持
-    'no-invalid-double-slash-comments': true,
     // 样式表中禁止无效位置的 @import
     'no-invalid-position-at-import-rule': true
   }
