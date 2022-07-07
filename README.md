@@ -4,22 +4,42 @@ A library for code style, includes Prettier、ESLint、StyleLint.
 
 # Installation
 
-引用 eslint
+### 必须安装
 
 ```bash
-npm install @pplmc/code-style @babel/core --save-dev
+npm i @pplmc/code-style -D
 ```
 
-引用 react
+### 自定义安装 install
+
+eslint 环境
 
 ```bash
-npm install @pplmc/code-style @babel/preset-env @babel/preset-react --save-dev
+npm i @babel/core -D
 ```
 
-引用 react-typescript
+typescript 环境
 
 ```bash
-npm install @pplmc/code-style @babel/core @babel/preset-env @babel/preset-react @babel/preset-typescript typescript --save-dev
+npm i @typescript-eslint/parser @typescript-eslint/eslint-plugin -D
+```
+
+react-javascript 环境
+
+```bash
+npm i @babel/preset-env @babel/preset-react eslint-plugin-react eslint-plugin-react-hooks -D
+```
+
+react-typescript 环境
+
+```bash
+npm i @babel/preset-env @babel/preset-react @babel/preset-typescript eslint-plugin-react eslint-plugin-react-hooks @typescript-eslint/parser @typescript-eslint/eslint-plugin -D
+```
+
+less 环境
+
+```bash
+npm i postcss postcss-less -D
 ```
 
 # Usage
@@ -59,7 +79,9 @@ module.exports = {
 
 ### Code Integrity
 
-package.json
+package.json 文件中
+
+scripts
 
 ```json
 {
@@ -68,6 +90,14 @@ package.json
     "lint-fix:js": "eslint --ext .js,.jsx,.ts,.tsx ./src --fix"
   }
 }
+```
+
+lint-staged
+
+```json
+  "lint-staged": {
+    "**/*.{ts,tsx,js,.jsx}": "eslint --ext .ts,.tsx,.js,.jsx"
+  }
 ```
 
 ### VSCode Integration
@@ -107,7 +137,10 @@ setting.json
 
 ## StyleLint
 
-用来检测 css、scss、less 文件
+用来检测 css、scss、less 文件, 规则包括：
+
+- stylelint
+- lesslint
 
 ### Configuration
 
@@ -133,15 +166,27 @@ module.exports = {
 
 ### Code Integrity
 
-package.json
+package.json 文件中
+
+scripts
 
 ```json
 {
   "scripts": {
-    "lint:style": "stylelint **/*.{css,less,scss}",
-    "lint-fix:style": "stylelint **/*.{css,less,scss} --fix"
+    "lint:style": "stylelint \"**/*.{css,less,scss}\"",
+    "lint-fix:style": "stylelint \"**/*.{css,less,scss}\" --fix"
   }
 }
+```
+
+> 注意，这里的路径需要用双引号或单引号包括起来，否则路径无法识别嵌套目录
+
+lint-staged
+
+```json
+  "lint-staged": {
+      "**/*.less": "stylelint",
+  }
 ```
 
 ### VSCode Integration
@@ -176,16 +221,6 @@ setting.json
 在项目根目录添加 Prettier 配置文件（及忽略文件 .prettierignore）， 如.prettierrc.js：
 
 ```js
-// 当需要添加新的rules时
-module.exports = {
-  extends: [require.resolve("@pplmc/code-style/config/prettier")],
-  rules: {},
-};
-```
-
-或者
-
-```js
 const linter = require("@pplmc/code-style");
 
 module.exports = {
@@ -195,7 +230,9 @@ module.exports = {
 
 ### Code Integrity
 
-package.json
+package.json 文件中
+
+scripts
 
 ```json
 {
@@ -204,6 +241,14 @@ package.json
     "lint-fix:prettier": "prettier **/*.{html,json,ejs,md} --write"
   }
 }
+```
+
+lint-staged
+
+```json
+  "lint-staged": {
+    "**/*.{html,json,ejs,md}": "prettier --check"
+  }
 ```
 
 ### VSCode Integration
@@ -267,10 +312,6 @@ module.exports = {
 - 如果 node 版本 < 16.0.0，请在项目的 package.json 中添加依赖：
 
   > 因为 node 自 16 版本以后才支持 peerDependencies 自动安装
-
-  ```bash
-  npm install -D eslint eslint-plugin-import eslint-plugin-node eslint-plugin-promise prettier stylelint stylelint-order
-  ```
 
 # Q&A
 

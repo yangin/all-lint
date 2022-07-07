@@ -1,5 +1,8 @@
 /**
  * For javaScript
+ * dependency
+ * es: eslint、eslint-plugin-import、eslint-plugin-jest、eslint-plugin-node、eslint-plugin-promise
+ * babel: @babel/eslint-parser、 @babel/core
  */
 module.exports = {
   extends: [

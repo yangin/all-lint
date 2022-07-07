@@ -1,3 +1,7 @@
+/**
+ * git commit message linting
+ * dependency: @commitlint/cli
+ */
 module.exports = {
   rules: {
     'header-max-length': [2, 'always', 120], // 要求内容长度<=120

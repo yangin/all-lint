@@ -1,5 +1,8 @@
 /**
  * For typescript
+ * dependency
+ * es: eslint、eslint-plugin-import、eslint-plugin-jest、eslint-plugin-node、eslint-plugin-promise
+ * typescript: @typescript-eslint/parser、@typescript-eslint/eslint-plugin
  */
 module.exports = {
   extends: [...[

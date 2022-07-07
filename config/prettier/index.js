@@ -1,7 +1,7 @@
 /**
  * 原则：代码更加美观，简洁明了，能少则少
+ * dependency: prettier
  */
-
 module.exports = {
   // 指定行长度240, 这样可以将一些强逻辑写在一起，更方便阅读
   printWidth: 240,

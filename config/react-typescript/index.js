@@ -1,5 +1,10 @@
 /**
  * For react in typescript
+ * dependency
+ * es: eslint、eslint-plugin-import、eslint-plugin-jest、eslint-plugin-node、eslint-plugin-promise
+ * babel: @babel/eslint-parser、@babel/preset-env、@babel/preset-react、@babel/preset-typescript
+ * react: eslint-plugin-react、eslint-plugin-react-hooks
+ * typescript: @typescript-eslint/parser、 @typescript-eslint/eslint-plugin
  */
 module.exports = {
   extends: [

@@ -1,3 +1,7 @@
+/**
+ * css
+ * dependency: stylelint、stylelint-order
+ */
 module.exports = {
   'extends': [
     './errors.js',

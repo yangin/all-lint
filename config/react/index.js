@@ -1,5 +1,9 @@
 /**
  * For react in javaScript
+ * dependency
+ * es: eslint、eslint-plugin-import、eslint-plugin-jest、eslint-plugin-node、eslint-plugin-promise
+ * babel: @babel/preset-env、 @babel/preset-react
+ * react: eslint-plugin-react、eslint-plugin-react-hooks
  */
 module.exports = {
   extends: [
