@@ -31,8 +31,6 @@ module.exports = {
   rangeStart: 0,
   // 格式化文件的结束位置
   rangeEnd: Infinity,
-  // 设置转换器，默认根据文件路径自动识别
-  parser: null,
   // 是否只格式化特殊注释的文件
   requirePragma: false,
   insertPragma: false,
