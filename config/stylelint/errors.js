@@ -15,8 +15,8 @@ module.exports = {
     'function-calc-no-unspaced-operator': true,
     // 禁止在linear-gradient()标准语法无效时调用方向值
     'function-linear-gradient-no-nonstandard-direction': true,
-    // 禁止使用未知函数
-    'function-no-unknown': true,
+    // 禁止使用未知函数，当前无法识别less等语言的函数，故暂时禁止使用
+    // 'function-no-unknown': true,
 
     // 禁止在字符串中使用（未转义的）换行符
     'string-no-newline': true,

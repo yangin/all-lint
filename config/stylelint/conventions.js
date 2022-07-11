@@ -20,7 +20,7 @@ module.exports = {
     'font-family-name-quotes': 'always-where-recommended',
 
     // 要求font-weight必须是数字，如 a { font-weight: 500; }
-    'font-weight-notation': 'numeric',
+    // 'font-weight-notation': 'numeric',
 
     // 要求url方法里的url必须携带引号，如 a { background: url(‘http://example.com/image.png’); }
     'function-url-quotes': 'always',
