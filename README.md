@@ -7,7 +7,7 @@ A library for code style, includes Prettier、ESLint、StyleLint、CommitLint.
 ### 必须安装
 
 ```bash
-npm i @yangin/code-style -D
+npm i @pplmc/code-style -D
 ```
 
 ### 自定义安装 install
@@ -103,7 +103,7 @@ npm i lint-staged -D
 ```js
 // 当需要添加新的rules时
 module.exports = {
-  extends: [require.resolve("@yangin/code-style/config/eslint")],
+  extends: [require.resolve("@pplmc/code-style/config/eslint")],
   rules: {},
 };
 ```
@@ -111,7 +111,7 @@ module.exports = {
 或者
 
 ```js
-const linter = require("@yangin/code-style");
+const linter = require("@pplmc/code-style");
 
 module.exports = {
   ...linter.eslint,
@@ -190,7 +190,7 @@ setting.json
 ```js
 // 当需要添加新的rules时
 module.exports = {
-  extends: [require.resolve("@yangin/code-style/config/stylelint")],
+  extends: [require.resolve("@pplmc/code-style/config/stylelint")],
   rules: {},
 };
 ```
@@ -198,7 +198,7 @@ module.exports = {
 或者
 
 ```js
-const linter = require("@yangin/code-style");
+const linter = require("@pplmc/code-style");
 
 module.exports = {
   ...linter.stylelint,
@@ -262,7 +262,7 @@ setting.json
 在项目根目录添加 Prettier 配置文件（及忽略文件 .prettierignore）， 如.prettierrc.js：
 
 ```js
-const linter = require("@yangin/code-style");
+const linter = require("@pplmc/code-style");
 
 module.exports = {
   ...linter.prettier,
@@ -331,7 +331,7 @@ npx husky add .husky/commit-msg 'npx --no-install commitlint --edit "$1"'
 
 ```js
 module.exports = {
-  extends: [require.resolve("@yangin/code-style/config/commitlint")],
+  extends: [require.resolve("@pplmc/code-style/config/commitlint")],
   rules: {},
 };
 ```
