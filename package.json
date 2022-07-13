@@ -27,6 +27,11 @@
     "url": "https://github.com/yangin/code-style/issues"
   },
   "homepage": "https://github.com/yangin/code-style#readme",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.rmxc.tech",
+    "disttag": "latest"
+  },
   "dependencies": {
     "@babel/eslint-parser": "^7.18.2",
     "@commitlint/cli": "^17.0.3",
