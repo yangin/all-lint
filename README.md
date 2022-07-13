@@ -1,6 +1,6 @@
 # code-style
 
-A library for code style, includes Prettier、ESLint、StyleLint.
+A library for code style, includes Prettier、ESLint、StyleLint、CommitLint.
 
 # Installation
 
@@ -40,6 +40,47 @@ less 环境
 
 ```bash
 npm i postcss postcss-less -D
+```
+
+## 其他安装
+
+### [husky](https://github.com/typicode/husky)
+
+```bash
+# 建议安装 7+ 版本
+npm i husky -D
+```
+
+并在 package.json 中进行如下配置:
+
+```json
+"scripts": {
+  "prepare": "husky install",
+}
+```
+
+> 该命令从 7+ 后，会在每次 npm install 时，在.git/config 里追加一条配置: `hooksPath = .husky`, 用来指定 git hooks 的配置文件路径。在 <7 的版本中是覆盖 .git/hooks 目录。
+
+然后添加 hook
+
+```bash
+npx husky add .husky/pre-commit "npx lint-staged"
+```
+
+### [lint-staged](https://github.com/okonet/lint-staged)
+
+```bash
+npm i lint-staged -D
+```
+
+在 package.json 中添加如下配置,用来设置 lint-staged 的执行行为
+
+```json
+  "lint-staged": {
+    "**/*.less": "stylelint --fix",
+    "**/*.{ts,tsx,js,jsx}": "eslint --ext .js,.jsx,.ts,.tsx --fix",
+    "**/*.{html,json,ejs,md}": "prettier --write"
+  },
 ```
 
 # Usage
@@ -294,17 +335,6 @@ module.exports = {
   rules: {},
 };
 ```
-
-或者
-
-```js
-const linter = require("@pplmc/code-style");
-
-module.exports = {
-  ...linter.commitlint,
-};
-```
-
 # Note
 
 - Linter 匹配的路径越精确(by [fast-global](https://github.com/mrmlnc/fast-glob#advanced-syntax))，其效率越高
