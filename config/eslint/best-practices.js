@@ -7,7 +7,7 @@ module.exports = {
     'array-callback-return': ['error'],
 
     // 要求 return 语句要么总是指定返回的值，要么不指定
-    'consistent-return': ['error'],
+    // 'consistent-return': ['error'],
 
     // 强制所有控制语句使用一致的括号风格 --fix
     'curly': ['error', 'multi-line'],
@@ -146,7 +146,7 @@ module.exports = {
     'no-with': ['error'],
 
     // 要求使用 Error 对象作为 Promise 拒绝的原因
-    'prefer-promise-reject-errors': ['error'],
+    // 'prefer-promise-reject-errors': ['error'],
 
     // 要求 IIFE 使用括号括起来, 使用 .call 和 .apply 调用时，强制要求包裹函数表达式 --fix
     'wrap-iife': ['error', 'any', { functionPrototypeMethods: true }],
