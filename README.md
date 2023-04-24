@@ -4,45 +4,37 @@ A library for code style, includes Prettier、ESLint、StyleLint、CommitLint.
 
 # Installation
 
-### 必须安装
+Node >= 16.0.0
+
+## 必须安装
 
 ```bash
 npm i @yangin/code-style -D
 ```
 
-### 自定义安装 install
+> 正确使用前，项目需要配置相应语法识别器（通过 babel 配置）, 如：react、typescript、less 等。
 
-eslint 环境
+## 选择性安装
 
-```bash
-npm i @babel/core -D
-```
-
-typescript 环境
+### 支持 Typescript
 
 ```bash
-npm i @typescript-eslint/parser @typescript-eslint/eslint-plugin -D
+npm i @typescript-eslint/eslint-plugin @typescript-eslint/parser -D
 ```
 
-react-javascript 环境
+### 支持 React
 
 ```bash
-npm i @babel/preset-env @babel/preset-react eslint-plugin-react eslint-plugin-react-hooks -D
+npm i eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-jest -D
 ```
 
-react-typescript 环境
+### 支持 Less
 
 ```bash
-npm i @babel/preset-env @babel/preset-react @babel/preset-typescript eslint-plugin-react eslint-plugin-react-hooks @typescript-eslint/parser @typescript-eslint/eslint-plugin -D
+npm i postcss-less -D
 ```
 
-less 环境
-
-```bash
-npm i postcss postcss-less -D
-```
-
-## 其他安装
+## 使用 commitlint 的预制安装
 
 ### [husky](https://github.com/typicode/husky)
 
@@ -335,6 +327,7 @@ module.exports = {
   rules: {},
 };
 ```
+
 # Note
 
 - Linter 匹配的路径越精确(by [fast-global](https://github.com/mrmlnc/fast-glob#advanced-syntax))，其效率越高
