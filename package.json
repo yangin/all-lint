@@ -12,6 +12,9 @@
     "lint-fix:style": "stylelint **/*.{css,less,scss} --fix",
     "prepare": "husky install"
   },
+  "bin": {
+    "code-lint": "./bin/index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yangin/code-style.git"
@@ -28,18 +31,17 @@
     "url": "https://github.com/yangin/code-style/issues"
   },
   "homepage": "https://github.com/yangin/code-style#readme",
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org",
-    "disttag": "latest"
-  },
   "dependencies": {
     "@babel/eslint-parser": "^7.18.2",
     "@commitlint/cli": "^17.0.3",
+    "chalk": "^4.1.2",
+    "commander": "^10.0.1",
     "eslint": "^8.17.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
+    "inquirer": "^8.2.5",
+    "ora": "^6.3.0",
     "prettier": "^2.6.0",
     "stylelint": "^14.8.3",
     "stylelint-order": "^5.0.0"
@@ -53,13 +55,6 @@
     "postcss": "^8.4.14",
     "typescript": "^3.8.3"
   },
-  "peerDependencies": {
-    "@babel/core": "^7.18.2",
-    "@babel/preset-env": "^7.18.2",
-    "@babel/preset-react": "^7.17.12",
-    "@babel/preset-typescript": "^7.17.12",
-    "typescript": "^3.8.3"
-  },
   "optionalDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
@@ -67,5 +62,8 @@
     "eslint-plugin-react": "^7.30.0",
     "eslint-plugin-react-hooks": "^4.5.0",
     "postcss-less": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=16.0"
   }
 }
