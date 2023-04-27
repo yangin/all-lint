@@ -35,6 +35,14 @@ const getAbsolutePath = (targetPath) => targetPath.startsWith('/') ? targetPath 
 const getPackageJsonPath = () => `${getProcessDir()}/package.json`
 
 /**
+ * 检查文件是否在指定目录下
+ * @param {string} filePath 文件路径
+ * @param {string} dirPath 目录路径
+ * @returns {boolean}
+ */
+const isExistFileInDir = (fileName, dir) => fs.existsSync(`${dir}/${fileName}`)
+
+/**
  * 获取文件夹下的所有文件名列表
  * @param {string} dirPath 文件夹路径
  */
@@ -82,12 +90,28 @@ const writeFileSync = (filePath, content, option = { flag: 'w+' }) => {
   fs.writeFileSync(filePath, content, option)
 }
 
+/**
+ * 将内容写入到文件中，当文件不存在时，创建该文件
+ * fs.writeFileSync 的问题是，当文件的上级目录不存在时，则会报错
+ * 此方法会当上级目录不存在时，依次创建上级目录
+ * 与writeFileSync不同的是，此方法写入时将流定位到文件末尾
+ * @param {string} filePath 文件路径
+ */
+const appendFileSync = (filePath, content, option = { flag: 'a' }) => {
+  const parentDirPath = path.dirname(filePath)
+  !fs.existsSync(parentDirPath) && mkdir(parentDirPath)
+  fs.writeFileSync(filePath, content, option)
+}
+
 module.exports = {
   isIncludeArray,
   filterReg,
   getProcessDir,
+  getAbsolutePath,
   getPackageJsonPath,
+  isExistFileInDir,
   getFileListInDir,
   removeFiles,
-  writeFileSync
+  writeFileSync,
+  appendFileSync
 }

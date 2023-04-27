@@ -1,15 +1,27 @@
 const inquirer = require('inquirer')
+const chalk = require('chalk')
 const { removeFiles } = require('./util')
+const { success, loading } = require('./loading')
 const {
   checkNodeEnv,
   checkLanguagePreset,
   checkLintEnv,
+  getLintFeatures,
   removeLintDependencies,
-  installLintDependencies
+  installLintDependencies,
+  generateLintConfigs,
+  generateVscodeSettings,
+  addLintScripts,
+  generateHuskyConfig
 } = require('./helper')
 
-const chat = async () => {
-  const { language, react, styleLanguage, commitLint } = await inquirer.prompt([
+/**
+ * 对话询问项目的基本信息
+ * 默认直接安装 Prettier、CommitLint
+ * @returns {Promise<{language: string, framework: string, styleLanguage: string}>}
+ */
+const projectChat = async () => {
+  const { language, framework, styleLanguage } = await inquirer.prompt([
     {
       type: 'list',
       name: 'language',
@@ -26,37 +38,50 @@ const chat = async () => {
         {
           name: 'NodeJs',
           value: 'nodejs'
+        },
+        {
+          name: 'None',
+          value: 'none'
         }
       ]
     },
     {
-      type: 'confirm',
-      name: 'react',
-      message: '是否使用了React库?'
+      type: 'list',
+      name: 'framework',
+      message: '请选择项目使用框架',
+      choices: [
+        {
+          name: 'React',
+          value: 'react'
+        },
+        {
+          name: 'None',
+          value: 'none'
+        }
+      ]
     },
     {
       type: 'list',
       name: 'styleLanguage',
-      message: '请选择样式语言',
+      message: '请选择项目样式语言',
       choices: [
         {
-          name: 'css',
+          name: 'Css',
           value: 'css'
         },
         {
-          name: 'less',
+          name: 'Less',
           value: 'less'
+        },
+        {
+          name: 'None',
+          value: 'none'
         }
       ]
-    },
-    {
-      type: 'confirm',
-      name: 'commitLint',
-      message: '是否建立Git Commit规范?'
     }
   ])
 
-  return { language, react, styleLanguage, commitLint }
+  return { language, framework, styleLanguage }
 }
 
 const init = async () => {
@@ -65,13 +90,14 @@ const init = async () => {
   if (!isNodeEnvOk) return
 
   // 询问要配置的lint目标
-  const { language, react, styleLanguage, commitLint } = await chat()
+  const chatTarget = await projectChat()
+  const { lintFeatures, lintPluginTools } = getLintFeatures(chatTarget)
 
   // 检测目标环境的预制依赖是否已经安装
-  const isPresetInstalled = checkLanguagePreset({ language, react, styleLanguage })
+  const isPresetInstalled = checkLanguagePreset(lintFeatures)
   if (!isPresetInstalled) return
 
-  // 检查lint的配置文件是否已存在
+  // 检查Lint的配置文件是否已存在
   const { installedLintName, installedLintConfigList } = checkLintEnv()
 
   // 当配置文件已存在时，询问是否覆盖
@@ -80,22 +106,35 @@ const init = async () => {
       {
         type: 'confirm',
         name: 'isOverride',
-        message: `检测到已存在${installedLintName.join('、')}的配置文件，是否覆盖？`
+        message: `已存在${installedLintName.join('、')}配置，是否覆盖？`
       }
     ])
     if (!isOverride) {
-      console.log('已取消初始化')
+      console.log('\n已取消初始化')
       return
     }
 
+    const spinner = loading('正在移除已存在Lint配置...')
     // 当配置文件已存在时，移除已存在的配置文件与依赖
     removeFiles(installedLintConfigList)
     removeLintDependencies()
-    console.log('移除已存在的配置文件与依赖')
+    success('成功移除已存在的Lint配置', spinner)
   }
+
+  const spinner = loading('正在初始化Lint配置...')
   // 安装依赖
-  installLintDependencies({ language, react, styleLanguage, commitLint })
+  installLintDependencies(lintFeatures)
   // 生成配置文件
+  generateLintConfigs(lintFeatures)
+  // 生成.vscode/settings.json 文件
+  generateVscodeSettings()
+  // 添加lint相关的scripts
+  addLintScripts(lintFeatures)
+  // 生成husky配置文件
+  generateHuskyConfig()
+  success('成功初始化Lint配置', spinner)
+
+  console.log(`\n请确认VSCode已安装${chalk.green(lintPluginTools.join('、'))}插件`)
 }
 
 module.exports = {

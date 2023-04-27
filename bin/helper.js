@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const { execSync } = require('child_process')
 const chalk = require('chalk')
 const {
@@ -7,7 +8,10 @@ const {
   getProcessDir,
   getPackageJsonPath,
   getFileListInDir,
-  writeFileSync
+  writeFileSync,
+  appendFileSync,
+  getAbsolutePath,
+  isExistFileInDir
 } = require('./util')
 const {
   LANGUAGE_PRESETS,
@@ -33,33 +37,31 @@ const checkNodeEnv = () => {
 
 /**
  * 检测目标环境的预制依赖是否已经安装
- * @param {*} target 目标环境 { language, react, styleLanguage }
+ * @param {string[]} lintFeatures 目标环境要素 ['typescript', 'react', 'less']
  * @returns boolean true: 已经安装 false: 未安装
  */
-const checkLanguagePreset = (target) => {
-  const { language, react, styleLanguage } = target
+const checkLanguagePreset = (lintFeatures) => {
   // 获取项目的package.json, 根据配置目标检查dependencies是否已经安装
   const packagePath = getPackageJsonPath()
   const { dependencies, devDependencies } = require(packagePath)
   const dependenciesList = [...Object.keys(dependencies), ...Object.keys(devDependencies)]
-  if (!isIncludeArray(dependenciesList, LANGUAGE_PRESETS.webpack)) {
-    console.log(chalk.red('项目未安装webpack'))
-    return false
+
+  const unInstalledCompiler = [] // 未安装的编译器
+  if (lintFeatures.includes('typescript') && !isIncludeArray(dependenciesList, LANGUAGE_PRESETS.typescript)) {
+    unInstalledCompiler.push('Typescript')
   }
-  if (language === 'typescript' && !isIncludeArray(dependenciesList, LANGUAGE_PRESETS.typescript)) {
-    console.log(chalk.red('项目未安装typescript解析器'))
-    return false
+  if (lintFeatures.includes('css') && !isIncludeArray(dependenciesList, LANGUAGE_PRESETS.css)) {
+    unInstalledCompiler.push('Css')
   }
-  if (!isIncludeArray(dependenciesList, LANGUAGE_PRESETS.css)) {
-    console.log(chalk.red('项目未安装css解析器'))
-    return false
+  if (lintFeatures.includes('less') && !isIncludeArray(dependenciesList, LANGUAGE_PRESETS.less)) {
+    unInstalledCompiler.push('Less')
   }
-  if (styleLanguage === 'less' && !isIncludeArray(dependenciesList, LANGUAGE_PRESETS.less)) {
-    console.log(chalk.red('项目未安装less解析器'))
-    return false
+  if (lintFeatures.includes('react') && !isIncludeArray(dependenciesList, LANGUAGE_PRESETS.react)) {
+    unInstalledCompiler.push('React')
   }
-  if (react && !isIncludeArray(dependenciesList, LANGUAGE_PRESETS.react)) {
-    console.log(chalk.red('项目未安装react解析器'))
+
+  if (unInstalledCompiler.length > 0) {
+    console.log(chalk.red(`\n检测到${unInstalledCompiler.join('、')}编译器未安装，请先安装`))
     return false
   }
   return true
@@ -108,7 +110,7 @@ const checkLintEnv = () => {
 const removeLintDependencies = () => {
   const packagePath = getPackageJsonPath()
   writePackageJson(packagePath, (packageJson) => {
-    const { dependencies, devDependencies, optionalDependencies } = packageJson
+    const { dependencies = {}, devDependencies = {}, optionalDependencies = {} } = packageJson
     const dependenciesList = [...Object.keys(dependencies), ...Object.keys(devDependencies), ...Object.keys(optionalDependencies)]
     const lintDependencies = filterReg(dependenciesList, ALL_LINT_DEPENDENCIES_REGEXP)
     lintDependencies.forEach((item) => {
@@ -133,6 +135,47 @@ const addLintDependencies = (dependencies) => {
       devDependencies[ `${name}` ] = `^${version}`
     })
     packageJson.devDependencies = sortDependencies(devDependencies)
+    return packageJson
+  })
+}
+
+/**
+ * 添加lint执行脚本到package.json文件的scripts中，以及 lint-staged配置
+ */
+const addLintScripts = (lintFeatures) => {
+  const packagePath = getPackageJsonPath()
+  writePackageJson(packagePath, (packageJson) => {
+    const { scripts = {}, 'lint-staged': lintStaged = {} } = packageJson
+
+    if (lintFeatures.includes('typescript')) {
+      scripts[ 'lint:js' ] = 'eslint --ext .js,.jsx,.ts,.tsx ./src'
+      scripts[ 'lint-fix:js' ] = 'eslint --ext .js,.jsx,.ts,.tsx ./src --fix'
+      lintStaged[ '**/*.{ts,tsx,js,.jsx}' ] = 'eslint --ext .ts,.tsx,.js,.jsx'
+    } else if (lintFeatures.includes('javascript')) {
+      scripts[ 'lint:js' ] = 'eslint --ext .js,.jsx ./src'
+      scripts[ 'lint-fix:js' ] = 'eslint --ext .js,.jsx ./src --fix'
+      lintStaged[ '**/*.{js,.jsx}' ] = 'eslint --ext .js,.jsx'
+    }
+
+    if (lintFeatures.includes('less')) {
+      scripts[ 'lint:css' ] = 'stylelint "**/*.{css,less}"'
+      scripts[ 'lint-fix:css' ] = 'stylelint "**/*.{css,less}" --fix'
+      lintStaged[ '**/*.{css,less}' ] = 'stylelint'
+    } else if (lintFeatures.includes('css')) {
+      scripts[ 'lint:css' ] = 'stylelint "**/*.css"'
+      scripts[ 'lint-fix:css' ] = 'stylelint "**/*.css" --fix'
+      lintStaged[ '**/*.css' ] = 'stylelint'
+    }
+
+    if (lintFeatures.includes('prettier')) {
+      scripts[ 'lint:prettier' ] = 'prettier --check "**/*.{html,json,md}"'
+      scripts[ 'lint-fix:prettier' ] = 'prettier --write "**/*.{html,json,md}"'
+      lintStaged[ '**/*.{html,json,md}' ] = 'prettier --check'
+    }
+
+    packageJson.scripts = scripts
+    packageJson[ 'lint-staged' ] = lintStaged
+    packageJson[ 'prepare' ] = 'husky install'
     return packageJson
   })
 }
@@ -163,48 +206,70 @@ const writePackageJson = (packagePath, callback) => {
 }
 
 /**
+ * 检查指定package是否已安装在package.json的dependencies中
+ * @param {string[]} packageNames 依赖列表, 例如 ['husky', 'lint-stage']
+ * @returns {boolean[]} 依赖是否已安装列表
+ */
+const checkInstalledPackage = (packageNames) => {
+  const packagePath = getPackageJsonPath()
+  const { dependencies = {}, devDependencies = {}, optionalDependencies = {} } = require(packagePath)
+  const dependenciesList = [...Object.keys(dependencies), ...Object.keys(devDependencies), ...Object.keys(optionalDependencies)]
+  return packageNames.map((item) => dependenciesList.includes(item))
+}
+
+/**
  * 根据目标环境安装lint相关依赖
  */
-const installLintDependencies = (target) => {
-  // 根据目标环境得到lint要素
-  const lintFeatures = getLintFeatures(target)
+const installLintDependencies = (lintFeatures) => {
   // 根据lint要素得到lint的所有依赖
   const lintDependencies = getLintDependencies(lintFeatures)
+
+  // 检查 husky、lint-staged 是否已经安装
+  const [isInstalledHusky, isInstalledLintStaged] = checkInstalledPackage(['husky', 'lint-staged'])
+  !isInstalledHusky && lintDependencies.push('husky')
+  !isInstalledLintStaged && lintDependencies.push('lint-staged')
+
   // 根据dependencies获取最新版本号
   const latestLintDependencies = getLatestLintDependencies(lintDependencies)
   // 将lint依赖写入package.json
   addLintDependencies(latestLintDependencies)
+  // 执行npm install
+  execSync('npm install')
 }
 
 /**
  * 根据target得到lintFeatures
  * lintFeatures的值为 LINT_DEPENDENCIES 里的keys
+ * @param {object} target chatTarget
+ * @returns { {lintFeature: string[], lintPluginTools: string[]} }
  */
 const getLintFeatures = (target) => {
-  const { language, react, styleLanguage, commitLint } = target
+  const { language, framework, styleLanguage } = target
   const lintFeatures = []
+  const lintPluginTools = []
   if (language === 'javascript') {
     lintFeatures.push('javascript')
-  } else {
+    lintPluginTools.push('eslint')
+  } else if (language === 'typescript') {
     lintFeatures.push('javascript', 'typescript')
+    lintPluginTools.push('eslint')
   }
 
-  if (react) {
+  if (framework === 'react') {
     lintFeatures.push('react')
   }
 
   if (styleLanguage === 'css') {
     lintFeatures.push('css')
-  } else {
+    lintPluginTools.push('stylelint')
+  } else if (styleLanguage === 'less') {
     lintFeatures.push('css', 'less')
+    lintPluginTools.push('stylelint')
   }
 
-  if (commitLint) {
-    lintFeatures.push('commitlint')
-  }
-
-  lintFeatures.push('prettier')
-  return lintFeatures
+  lintFeatures.push('prettier', 'commitlint')
+  lintPluginTools.push('prettier')
+  return { lintFeatures, lintPluginTools }
 }
 
 /**
@@ -233,10 +298,144 @@ const getLatestLintDependencies = (dependencies) => {
   return dependenciesList
 }
 
+/**
+ * 根据chat target获取lint配置目标
+ * @param {string} target
+ * @returns {object} lint配置目标 { eslint: 'react', stylelint: 'less', commitlint: 'commitlint', prettier: 'prettier' }
+ */
+const getLintConfigTarget = (lintFeatures) => {
+  const lintTarget = {}
+  if (lintFeatures.includes('typescript')) {
+    lintTarget.eslint = lintFeatures.includes('react') ? 'react-typescript' : 'tslint'
+  } else if (lintFeatures.includes('javascript')) {
+    lintTarget.eslint = lintFeatures.includes('react') ? 'react' : 'eslint'
+  }
+
+  if (lintFeatures.includes('less')) {
+    lintTarget.stylelint = 'lesslint'
+  } else if (lintFeatures.includes('css')) {
+    lintTarget.stylelint = 'stylelint'
+  }
+
+  lintTarget.commitlint = 'commitlint'
+  lintTarget.prettier = 'prettier'
+
+  return lintTarget
+}
+
+/**
+ * 获取当前项目名称
+ * @returns {string} 项目名称
+ */
+const getProjectName = () => {
+  const currentPackageJsonPath = getAbsolutePath('../package.json')
+  const { name } = require(currentPackageJsonPath)
+  return name
+}
+
+/**
+ * 根据lintTarget批量生成lint配置文件到项目的根目录
+ * @param {string} lintFeatures
+ */
+const generateLintConfigs = (lintFeatures) => {
+  // 根据target获取lint配置目标
+  const lintTarget = getLintConfigTarget(lintFeatures)
+  // 获取当前项目名称
+  const projectName = getProjectName()
+  const processDir = getProcessDir()
+  Object.entries(lintTarget).forEach(([key, value]) => {
+    const lintConfigPath = path.join(processDir, `.${key}rc.js`)
+    const content =
+`module.exports = {
+  extends: [require.resolve('${projectName}/config/${value}')],
+  rules: {},
+}`
+    writeFileSync(lintConfigPath, content)
+  })
+}
+
+/**
+ * 生产.vscode/settings.json文件
+ * 这里为固定内容，包含了eslint（javascript、typescript、react）、prettier等的所有配置
+ */
+const generateVscodeSettings = () => {
+  const processDir = getProcessDir()
+  const settingsPath = path.join(processDir, '.vscode/settings.json')
+  const isExistSettings = isExistFileInDir(processDir, '.vscode/settings.json')
+  const settingsContent = isExistSettings ? require(settingsPath) : {}
+  settingsContent[ 'javascript.format.enable' ] = false
+  settingsContent[ 'editor.formatOnSave' ] = true
+  settingsContent[ 'editor.codeActionsOnSave' ] = {
+    'source.fixAll.eslint': true
+  }
+  settingsContent[ 'eslint.validate' ] = [
+    'javascript',
+    'javascriptreact',
+    'typescript',
+    'typescriptreact'
+  ]
+  settingsContent[ '[javascript]' ] = {
+    'editor.defaultFormatter': 'dbaeumer.vscode-eslint'
+  }
+  settingsContent[ '[javascriptreact]' ] = {
+    'editor.defaultFormatter': 'dbaeumer.vscode-eslint'
+  }
+  settingsContent[ '[typescript]' ] = {
+    'editor.defaultFormatter': 'dbaeumer.vscode-eslint'
+  }
+  settingsContent[ '[typescriptreact]' ] = {
+    'editor.defaultFormatter': 'dbaeumer.vscode-eslint'
+  }
+  settingsContent[ '[css]' ] = {
+    'editor.defaultFormatter': 'stylelint.vscode-stylelint'
+  }
+  settingsContent[ '[less]' ] = {
+    'editor.defaultFormatter': 'stylelint.vscode-stylelint'
+  }
+  settingsContent[ '[scss]' ] = {
+    'editor.defaultFormatter': 'stylelint.vscode-stylelint'
+  }
+  settingsContent[ 'editor.defaultFormatter' ] = 'esbenp.prettier-vscode'
+
+  writeFileSync(settingsPath, JSON.stringify(settingsContent, null, 2))
+}
+
+/**
+ * 生成husky配置文件
+ */
+const generateHuskyConfig = () => {
+  const processDir = getProcessDir()
+  const preCommitPath = path.join(processDir, '.husky/pre-commit')
+  const commitMsgPath = path.join(processDir, '.husky/commit-msg')
+  // 生成.husky/commit-msg文件，这里覆盖原有的commit-msg文件
+  const commitMsgContent = `#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+npx --no-install commitlint --edit "$1"`
+  writeFileSync(commitMsgPath, commitMsgContent)
+
+  // 生成.husky/pre-commit文件
+  // 如果存在.husky/pre-commit文件，则在原有的基础上添加npm run lint-staged命令
+  const isExistPreCommit = isExistFileInDir(processDir, '.husky/pre-commit')
+  if (isExistPreCommit) {
+    appendFileSync(preCommitPath, `npm run lint-staged`)
+  } else {
+    writeFileSync(preCommitPath, `#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+npm run lint-staged`)
+  }
+}
+
 module.exports = {
   checkNodeEnv,
   checkLanguagePreset,
   checkLintEnv,
+  getLintFeatures,
   removeLintDependencies,
-  installLintDependencies
+  installLintDependencies,
+  generateLintConfigs,
+  generateVscodeSettings,
+  addLintScripts,
+  generateHuskyConfig
 }

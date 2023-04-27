@@ -341,3 +341,10 @@ module.exports = {
 Q: Prettier、ESLint、StyleLint 之间的规则冲突了怎么办？
 
 A: 通过区别配置各个检查器检查的文件格式，来避免规则冲突。
+
+# TODO
+
+[*] 整理脚本执行流程
+[*] 优化起始问题
+[ ] 优化代码及执行速度
+[ ] 优化 README

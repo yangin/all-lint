@@ -85,6 +85,15 @@ const LINT_DEPENDENCIES = {
   commitlint: ['@commitlint/cli']
 }
 
+/**
+ * VSCode插件Map
+ */
+const VSCODE_EXTENSIONS = {
+  eslint: 'ESLint',
+  stylelint: 'Stylelint',
+  prettier: 'Prettier - Code formatter'
+}
+
 module.exports = {
   LANGUAGE_PRESETS,
   COMMITLINT_PRESETS,
@@ -92,5 +101,6 @@ module.exports = {
   STYLELINT_PRESETS,
   PRETTIER_PRESETS,
   ALL_LINT_DEPENDENCIES_REGEXP,
-  LINT_DEPENDENCIES
+  LINT_DEPENDENCIES,
+  VSCODE_EXTENSIONS
 }
