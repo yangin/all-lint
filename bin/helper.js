@@ -172,10 +172,10 @@ const addLintScripts = (lintFeatures) => {
       scripts[ 'lint-fix:prettier' ] = 'prettier --write "**/*.{html,json,md}"'
       lintStaged[ '**/*.{html,json,md}' ] = 'prettier --check'
     }
+    scripts[ 'prepare' ] = 'husky install'
 
     packageJson.scripts = scripts
     packageJson[ 'lint-staged' ] = lintStaged
-    packageJson[ 'prepare' ] = 'husky install'
     return packageJson
   })
 }
@@ -218,6 +218,19 @@ const checkInstalledPackage = (packageNames) => {
 }
 
 /**
+ * 安装Husky
+ */
+const installHusky = () => {
+  // 检查 husky 是否已经安装
+  const [isInstalledHusky] = checkInstalledPackage(['husky'])
+  // 执行npm install
+  !isInstalledHusky && execSync('npm install husky -D')
+  // 往package.json的scripts中添加prepare脚本
+  setPackageJsonSettings([{ 'scripts.prepare': 'husky install' }])
+  execSync('npm run prepare')
+}
+
+/**
  * 根据目标环境安装lint相关依赖
  */
 const installLintDependencies = (lintFeatures) => {
@@ -225,8 +238,7 @@ const installLintDependencies = (lintFeatures) => {
   const lintDependencies = getLintDependencies(lintFeatures)
 
   // 检查 husky、lint-staged 是否已经安装
-  const [isInstalledHusky, isInstalledLintStaged] = checkInstalledPackage(['husky', 'lint-staged'])
-  !isInstalledHusky && lintDependencies.push('husky')
+  const [isInstalledLintStaged] = checkInstalledPackage(['lint-staged'])
   !isInstalledLintStaged && lintDependencies.push('lint-staged')
 
   // 根据dependencies获取最新版本号
@@ -427,6 +439,20 @@ npm run lint-staged`)
   }
 }
 
+/**
+ * 设置package.json的配置
+ * @param {string|string[]} settings [{key: value}, {key: value}]
+ */
+const setPackageJsonSettings = (settings) => {
+  if (Array.isArray(settings)) {
+    let setting = ''
+    settings.forEach((item) => {
+      setting += `${Object.keys(item)[ 0 ]}='${Object.values(item)[ 0 ]} '`
+    })
+    execSync(`npm pkg set ${setting.trim()}`)
+  }
+}
+
 module.exports = {
   checkNodeEnv,
   checkLanguagePreset,
@@ -437,5 +463,6 @@ module.exports = {
   generateLintConfigs,
   generateVscodeSettings,
   addLintScripts,
-  generateHuskyConfig
+  generateHuskyConfig,
+  installHusky
 }

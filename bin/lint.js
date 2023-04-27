@@ -8,6 +8,7 @@ const {
   checkLintEnv,
   getLintFeatures,
   removeLintDependencies,
+  installHusky,
   installLintDependencies,
   generateLintConfigs,
   generateVscodeSettings,
@@ -122,6 +123,8 @@ const init = async () => {
   }
 
   const spinner = loading('正在初始化Lint配置...')
+  // 安装husky
+  installHusky()
   // 安装依赖
   installLintDependencies(lintFeatures)
   // 生成配置文件
