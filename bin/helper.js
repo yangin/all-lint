@@ -1,6 +1,5 @@
-const fs = require('fs')
 const path = require('path')
-const { execSync } = require('child_process')
+const { execSync, exec } = require('child_process')
 const chalk = require('chalk')
 const {
   isIncludeArray,
@@ -110,7 +109,7 @@ const checkLintEnv = () => {
 const removeLintDependencies = () => {
   const packagePath = getPackageJsonPath()
   writePackageJson(packagePath, (packageJson) => {
-    const { dependencies = {}, devDependencies = {}, optionalDependencies = {} } = packageJson
+    const { dependencies = {}, devDependencies = {}, optionalDependencies = {}, scripts = {} } = packageJson
     const dependenciesList = [...Object.keys(dependencies), ...Object.keys(devDependencies), ...Object.keys(optionalDependencies)]
     const lintDependencies = filterReg(dependenciesList, ALL_LINT_DEPENDENCIES_REGEXP)
     lintDependencies.forEach((item) => {
@@ -118,6 +117,7 @@ const removeLintDependencies = () => {
       delete devDependencies[ item ]
       delete optionalDependencies[ item ]
     })
+    scripts[ 'prepare' ] && delete scripts[ 'prepare' ]
     return packageJson
   })
 }
@@ -200,9 +200,7 @@ const sortDependencies = (dependencies) => {
 const writePackageJson = (packagePath, callback) => {
   const packageJson = require(packagePath)
   const newPackageJson = callback(packageJson)
-  fs.WriteStream(packagePath, {
-    encoding: 'utf-8'
-  }).write(JSON.stringify(newPackageJson, null, 2))
+  writeFileSync(packagePath, JSON.stringify(newPackageJson, null, 2))
 }
 
 /**
@@ -233,7 +231,7 @@ const installHusky = () => {
 /**
  * 根据目标环境安装lint相关依赖
  */
-const installLintDependencies = (lintFeatures) => {
+const installLintDependencies = async (lintFeatures) => {
   // 根据lint要素得到lint的所有依赖
   const lintDependencies = getLintDependencies(lintFeatures)
 
@@ -242,7 +240,7 @@ const installLintDependencies = (lintFeatures) => {
   !isInstalledLintStaged && lintDependencies.push('lint-staged')
 
   // 根据dependencies获取最新版本号
-  const latestLintDependencies = getLatestLintDependencies(lintDependencies)
+  const latestLintDependencies = await getLatestLintDependencies(lintDependencies)
   // 将lint依赖写入package.json
   addLintDependencies(latestLintDependencies)
   // 执行npm install
@@ -300,13 +298,21 @@ const getLintDependencies = (lintFeatures) => {
 /**
  * 根据依赖列表获取依赖的版本号
  */
-const getLatestLintDependencies = (dependencies) => {
+const getLatestLintDependencies = async (dependencies) => {
   const dependenciesList = []
-  dependencies.forEach((item) => {
-    const latestVersion = execSync(`npm view ${item} version`).toString()
-      .trim()
-    dependenciesList.push(`${item}@^${latestVersion}`)
+  const promiseList = dependencies.map((item) => new Promise((resolve) => {
+    exec(`npm view ${item} version`, (err, stdout) => {
+      if (err) {
+        console.error(err)
+      }
+      resolve(stdout.toString().trim())
+    })
+  }))
+  const latestVersions = await Promise.all(promiseList)
+  dependencies.forEach((item, index) => {
+    dependenciesList.push(`${item}@^${latestVersions[ index ]}`)
   })
+
   return dependenciesList
 }
 

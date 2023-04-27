@@ -123,10 +123,10 @@ const init = async () => {
   }
 
   const spinner = loading('正在初始化Lint配置...')
+  // 安装依赖
+  await installLintDependencies(lintFeatures)
   // 安装husky
   installHusky()
-  // 安装依赖
-  installLintDependencies(lintFeatures)
   // 生成配置文件
   generateLintConfigs(lintFeatures)
   // 生成.vscode/settings.json 文件
