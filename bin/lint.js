@@ -37,10 +37,6 @@ const projectChat = async () => {
           value: 'typescript'
         },
         {
-          name: 'NodeJs',
-          value: 'nodejs'
-        },
-        {
           name: 'None',
           value: 'none'
         }
