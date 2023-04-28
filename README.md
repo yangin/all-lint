@@ -6,37 +6,53 @@ A library for code style, includes Prettier、ESLint、StyleLint、CommitLint.
 
 Node >= 16.0.0
 
-## 必须安装
-
 ```bash
 npm i @yangin/code-style -D
 ```
 
 > 正确使用前，项目需要配置相应语法识别器（通过 babel 配置）, 如：react、typescript、less 等。
 
-## 选择性安装
+## Auto Install
 
-### 支持 Typescript
+```bash
+npx code-lint init
+```
+
+该命令会执行以下内容：
+
+- 移除项目中已存在的 Prettier、ESLint、StyleLint、CommitLint 相关的依赖和配置
+- 在 package.json devDependencies 中添加 Lint 相关的依赖
+- 在 package.json scripts 中添加 Lint 相关的命令
+- 在 package.json 中添加 lint-staged 配置
+- 在项目根目录下生成 Lint 配置文件，如 .eslintrc.js、.stylelintrc.js 等。
+- 在项目根目录下生成 .vscode/settings.json 文件，用来配置 VSCode 的 ESLint、StyleLint 插件。
+- 在项目根目录下生成 .husky/pre-commit、 commit-msg 文件，用来配置 git hooks。
+
+## Manual Install
+
+### 安装依赖
+
+支持 typescript
 
 ```bash
 npm i @typescript-eslint/eslint-plugin @typescript-eslint/parser -D
 ```
 
-### 支持 React
+支持 React
 
 ```bash
 npm i eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-jest -D
 ```
 
-### 支持 Less
+支持 Less
 
 ```bash
 npm i postcss-less -D
 ```
 
-## 使用 commitlint 的预制安装
+### 使用 commitlint 的预制安装
 
-### [husky](https://github.com/typicode/husky)
+#### 安装[husky](https://github.com/typicode/husky)
 
 ```bash
 # 建议安装 7+ 版本
@@ -59,7 +75,7 @@ npm i husky -D
 npx husky add .husky/pre-commit "npx lint-staged"
 ```
 
-### [lint-staged](https://github.com/okonet/lint-staged)
+#### 安装[lint-staged](https://github.com/okonet/lint-staged)
 
 ```bash
 npm i lint-staged -D
@@ -341,10 +357,3 @@ module.exports = {
 Q: Prettier、ESLint、StyleLint 之间的规则冲突了怎么办？
 
 A: 通过区别配置各个检查器检查的文件格式，来避免规则冲突。
-
-# TODO
-
-[*] 整理脚本执行流程
-[*] 优化起始问题
-[ ] 优化代码及执行速度
-[ ] 优化 README
