@@ -10,7 +10,9 @@
     "lint-fix:prettier": "prettier **/*.{html,json,md} --write",
     "lint:style": "stylelint **/*.{css,less,scss}",
     "lint-fix:style": "stylelint **/*.{css,less,scss} --fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "publish": "npm publish --registry https://registry.npmjs.org/ --access public",
+    "publish:local": "npm publish --registry http://localhost:4873"
   },
   "bin": {
     "all-lint": "./bin/index.js"
