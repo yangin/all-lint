@@ -216,19 +216,6 @@ const checkInstalledPackage = (packageNames) => {
 }
 
 /**
- * 安装Husky
- */
-const installHusky = () => {
-  // 检查 husky 是否已经安装
-  const [isInstalledHusky] = checkInstalledPackage(['husky'])
-  // 执行npm install
-  !isInstalledHusky && execSync('npm install husky -D')
-  // 往package.json的scripts中添加prepare脚本
-  setPackageJsonSettings([{ 'scripts.prepare': 'husky install' }])
-  execSync('npm run prepare')
-}
-
-/**
  * 根据目标环境安装lint相关依赖
  */
 const installLintDependencies = async (lintFeatures) => {
@@ -236,15 +223,25 @@ const installLintDependencies = async (lintFeatures) => {
   const lintDependencies = getLintDependencies(lintFeatures)
 
   // 检查 husky、lint-staged 是否已经安装
-  const [isInstalledLintStaged] = checkInstalledPackage(['lint-staged'])
+  const [isInstalledHusky, isInstalledLintStaged] = checkInstalledPackage(['husky', 'lint-staged'])
+  !isInstalledHusky && lintDependencies.push('husky')
   !isInstalledLintStaged && lintDependencies.push('lint-staged')
 
   // 根据dependencies获取最新版本号
   const latestLintDependencies = await getLatestLintDependencies(lintDependencies)
   // 将lint依赖写入package.json
   addLintDependencies(latestLintDependencies)
+
+  // 检查删除prepare脚本
+  const packageJsonPath = getPackageJsonPath()
+  const { scripts = {} } = require(packageJsonPath)
+  scripts.prepare && execSync('npm pkg delete script.prepare')
+
   // 执行npm install
   execSync('npm install')
+
+  setPackageJsonSettings([{ 'scripts.prepare': 'husky install' }])
+  execSync('npm run prepare')
 }
 
 /**
@@ -469,6 +466,5 @@ module.exports = {
   generateLintConfigs,
   generateVscodeSettings,
   addLintScripts,
-  generateHuskyConfig,
-  installHusky
+  generateHuskyConfig
 }
