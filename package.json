@@ -1,6 +1,6 @@
 {
   "name": "all-lint",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A library for code style, includes Prettier、ESLint、StyleLint、CommitLint",
   "main": "index.js",
   "scripts": {
