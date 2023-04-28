@@ -361,12 +361,26 @@ const generateLintConfigs = (lintFeatures) => {
   const processDir = getProcessDir()
   Object.entries(lintTarget).forEach(([key, value]) => {
     const lintConfigPath = path.join(processDir, `.${key}rc.js`)
+
     const content =
 `module.exports = {
   extends: [require.resolve('${projectName}/config/${value}')],
-  rules: {},
-}`
+  rules: {}
+}
+`
     writeFileSync(lintConfigPath, content)
+
+    if (key === 'commitlint') return
+    const lintIgnorePath = path.join(processDir, `.${key}ignore`)
+    const ignoreContent = `node_modules
+dist
+.cache
+.vscode
+.husky
+.idea
+.DS_Store`
+
+    writeFileSync(lintIgnorePath, ignoreContent)
   })
 }
 
