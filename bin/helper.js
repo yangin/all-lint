@@ -19,7 +19,8 @@ const {
   STYLELINT_PRESETS,
   PRETTIER_PRESETS,
   ALL_LINT_DEPENDENCIES_REGEXP,
-  LINT_DEPENDENCIES
+  LINT_DEPENDENCIES,
+  VSCODE_EXTENSIONS
 } = require('./constant')
 /**
  * 检查node环境 >= 16
@@ -253,13 +254,13 @@ const installLintDependencies = async (lintFeatures) => {
 const getLintFeatures = (target) => {
   const { language, framework, styleLanguage } = target
   const lintFeatures = []
-  const lintPluginTools = []
+  const lintTools = []
   if (language === 'javascript') {
     lintFeatures.push('javascript')
-    lintPluginTools.push('eslint')
+    lintTools.push('eslint')
   } else if (language === 'typescript') {
     lintFeatures.push('javascript', 'typescript')
-    lintPluginTools.push('eslint')
+    lintTools.push('eslint')
   }
 
   if (framework === 'react') {
@@ -268,15 +269,15 @@ const getLintFeatures = (target) => {
 
   if (styleLanguage === 'css') {
     lintFeatures.push('css')
-    lintPluginTools.push('stylelint')
+    lintTools.push('stylelint')
   } else if (styleLanguage === 'less') {
     lintFeatures.push('css', 'less')
-    lintPluginTools.push('stylelint')
+    lintTools.push('stylelint')
   }
 
   lintFeatures.push('prettier', 'commitlint')
-  lintPluginTools.push('prettier')
-  return { lintFeatures, lintPluginTools }
+  lintTools.push('prettier')
+  return { lintFeatures, lintTools, lintPluginTools: lintTools.map(item => VSCODE_EXTENSIONS[ item ]) }
 }
 
 /**

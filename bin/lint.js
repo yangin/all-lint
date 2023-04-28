@@ -8,7 +8,6 @@ const {
   checkLintEnv,
   getLintFeatures,
   removeLintDependencies,
-  installHusky,
   installLintDependencies,
   generateLintConfigs,
   generateVscodeSettings,
@@ -131,7 +130,7 @@ const init = async () => {
   generateHuskyConfig()
   success('成功初始化Lint配置', spinner)
 
-  console.log(`\n请确认VSCode已安装${chalk.green(lintPluginTools.join('、'))}插件`)
+  console.log(`\n请确认VSCode已安装${lintPluginTools.map((item) => chalk.green(item)).join('、')}插件`)
 }
 
 module.exports = {
