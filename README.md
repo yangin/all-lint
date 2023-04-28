@@ -352,6 +352,8 @@ module.exports = {
 
   > 因为 node 自 16 版本以后才支持 peerDependencies 自动安装
 
+- 必要情况下可通过`git commit --no-verify`跳过 commitlint 检查
+
 # Q&A
 
 Q: Prettier、ESLint、StyleLint 之间的规则冲突了怎么办？
