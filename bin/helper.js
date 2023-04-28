@@ -439,8 +439,10 @@ npx --no-install commitlint --edit "$1"`
     writeFileSync(preCommitPath, `#!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm run lint-staged`)
+npx lint-staged`)
   }
+  // 修改.husky/* 文件的权限，以防止报错
+  execSync('chmod ug+x .husky/*')
 }
 
 /**
